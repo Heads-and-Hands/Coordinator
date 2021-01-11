@@ -40,17 +40,15 @@ extension Router {
     /*
     Переключаем фокус отображения на другую "иерархию" (модальное отображение)
     @param router - другой контроллер
-    @param context - показ в контексте текущего роутера, true - для алертов
+    @param style - показ в контексте текущего роутера, true - для алертов
     */
-    public func `switch`(to router: Router, context: Bool, animated: Bool) {
+    public func `switch`(to router: Router, style: UIModalPresentationStyle? = nil, animated: Bool) {
         guard let destinationVC = router.rootController else {
             return
         }
 
-        if context {
-            destinationVC.modalPresentationStyle = .overCurrentContext
-        } else {
-            destinationVC.modalPresentationStyle = .overFullScreen
+        if let style = style {
+            destinationVC.modalPresentationStyle = style
         }
 
         rootController?.present(destinationVC, animated: animated, completion: nil)
