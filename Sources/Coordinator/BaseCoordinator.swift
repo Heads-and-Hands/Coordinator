@@ -1,26 +1,34 @@
+//
+//  File.swift
+//  
+//
+//  Created by basalaev on 19.01.2021.
+//
+
 import Foundation
 
-open class BaseCoordinator: Coordinator {
+open class BaseCoordinator<Router, Resolver>: Coordinator {
     public let router: Router
     public let resolver: Resolver
 
-    private var childs: [Coordinator] = []
+    // TODO: Добавить функцию для удаления
+    public private(set) var childs: [Coordinator] = []
 
-    open func start() {}
+    open func start() throws {}
 
     public init(router: Router, resolver: Resolver) {
         self.router = router
         self.resolver = resolver
     }
 
-    public func start<T: Coordinator & FinishableCoordinator>(_ coordinator: T, finishFlow: T.FinishFlow) {
+    public func startNext<T: Coordinator & FinishableCoordinator>(_ coordinator: T, finishFlow: T.FinishFlow) throws {
         coordinator.finishFlow = finishFlow
-        start(coordinator)
+        try startNext(coordinator)
     }
 
-    public func start(_ coordinator: Coordinator) {
+    public func startNext(_ coordinator: Coordinator) throws {
         addDependency(coordinator)
-        coordinator.start()
+        try coordinator.start()
     }
 
     public func addDependency(_ coordinator: Coordinator) {
